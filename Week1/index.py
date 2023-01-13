@@ -52,9 +52,9 @@ def modify():
 @app.route("/v1/cookie/withdrawl", methods=['POST', 'GET'])
 def delete():
     if request.method == 'POST':
-        key = request.get_json()['key']
+        param = request.get_json()
         res = make_response('Withdrawl!')
-        res.delete_cookie(key)
+        res.delete_cookie(param['key'])
         return res
     else:
         return '쿠키 삭제 페이지'
