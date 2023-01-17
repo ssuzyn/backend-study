@@ -30,11 +30,9 @@ class database():
         return data
     
     def login(self, email, pwd):
-        sql = "select * from user where email=(%s) and password=(%s)"
-        self.cursor.execute(sql, email, pwd)
-        data = self.cursor.fetchall()
+        sql = "select email, password from user where email=(%s) and password=(%s)"
+        self.cursor.execute(sql, (email, pwd))
+        data = self.cursor.fetchone()
         self.db.commit()
         self.db.close()
         return data
-
-        
