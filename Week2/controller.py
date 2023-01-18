@@ -1,5 +1,5 @@
 from flask import request, session
-from flask import jsonify, render_template, make_response
+from flask import jsonify, render_template, make_response, redirect
 import db, jwt, json
 from user import user
 
@@ -55,8 +55,7 @@ def sessionVerify():
     if request.method == 'POST':
         param = request.get_json()
         email = param['email']
-
-        if 'data' in session:
-            data = session['data']
-            return data
+        print(session)
+        if email in session['data']:
+            return email
         else: return jsonify(result=401)

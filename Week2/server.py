@@ -1,5 +1,6 @@
 from flask import Flask
 import controller as con
+import kakao_controller as ka
 from datetime import timedelta
 
 app = Flask(__name__)
@@ -24,5 +25,11 @@ def sessionLogin(): return con.sessionLogin()
 @app.route("/v1/login/sessionVerify", methods=["GET", "POST"])
 def sessionVerify(): return con.sessionVerify()
 
+@app.route("/v1/oauth/kakao")
+def kakaoLogin(): return ka.kakaoLogin()
+
+@app.route("/v1/oauth/callback/")
+def callback(): return ka.callback()
+
 if __name__ == "__main__":
-    app.run(debug=True, port=8000)
+    app.run(debug=True, port=5000)
