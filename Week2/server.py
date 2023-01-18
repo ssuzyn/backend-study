@@ -42,6 +42,13 @@ def jwtLogin():
             return {"Authorization" : token}, 200
         return jsonify(result=401)
 
+@app.route("/v1/login/jwtVerify", methods=["GET", "POST"])
+def jwtVerify():
+    if request.method == 'POST':
+        token = request.headers.get('authorization')
+        print(token)
+        decode = jwt.decode(token, "secret", algorithm)
+        return decode['email']
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=8000)
