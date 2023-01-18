@@ -36,3 +36,13 @@ class database():
         self.db.commit()
         self.db.close()
         return data
+    
+    def saveSession(self, cookie, session):
+        try:
+            sql = "insert into sessions (session_id, data) values (%s, %s)"
+            self.cursor.execute(sql, (cookie, session['data']))
+            self.db.commit()
+        except Exception as e:
+            print("DB ERROR : ", e)
+        finally:
+            self.db.close()
