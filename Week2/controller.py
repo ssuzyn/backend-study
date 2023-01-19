@@ -1,7 +1,8 @@
 from flask import request, session
 from flask import jsonify, render_template, make_response, redirect
-import db, jwt, json
-from user import user
+import jwt, json
+from user import User
+from util.db import database
 
 def main():
     return "hello week2 !!"
@@ -12,10 +13,10 @@ def register():
         email = param['email']
         pwd = param['password']
 
-        if(db.database().overlapEmail(email)):
+        if(database().overlapEmail(email)):
             return make_response('Already Registerd!')
         else:
-            db.database().signup(email, pwd)
+            database().signup(email, pwd)
             return make_response('Register Complete!!')
 
 def jwtLogin():
@@ -23,7 +24,7 @@ def jwtLogin():
         param = request.get_json()
         email = param['email']
         pwd = param['password']
-        token = user.loginJWT(email, pwd)
+        token = User().loginJWT(email, pwd)
         if token:
             return {"Authorization" : token}, 200
         return jsonify(result=401)
@@ -40,7 +41,7 @@ def sessionLogin():
         param = request.get_json()
         email = param['email']
         pwd = param['password']
-        ss = user.loginSession(email, pwd)
+        ss = User().loginSession(email, pwd)
         if ss:
             print(request.cookies)
             return make_response('Login Complete!!')
@@ -48,7 +49,7 @@ def sessionLogin():
     else:
         print(request.cookies)
         #print(request.headers['set-cookie'])
-        db.database().saveSession(request.cookies['session'], session)
+        database().saveSession(request.cookies['session'], session)
         return "session Login Page"
 
 def sessionVerify():

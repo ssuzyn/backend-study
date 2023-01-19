@@ -1,9 +1,11 @@
+import os, sys
 from flask import session
-import db, jwt
+import jwt
+from util.db import database
 
-class user():
+class User:
     def loginJWT(email, pwd):
-        info = db.database().login(email, pwd) #payload
+        info = database().login(email, pwd) #payload
         print(type(info))
         if(info):
             token = jwt.encode(info, "secret", 'HS256')
@@ -12,7 +14,7 @@ class user():
         return False
     
     def loginSession(email, pwd):
-        info = db.database().login(email, pwd) #payload
+        info = database().login(email, pwd) #payload
         if(info):
             session['data'] = email
             session.permanent = True

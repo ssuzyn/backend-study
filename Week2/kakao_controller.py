@@ -1,7 +1,7 @@
 from flask import request, session
 from flask import jsonify, make_response, redirect, url_for
 from oauth import Oauth
-from kakao_db import database as db
+from util.kakao_db import database as db
 from key.kakao_client import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, SIGNOUT_REDIRECT_URI
 
 def kakaoMain():
