@@ -10,10 +10,11 @@ class Oauth:
             "Cache-Control": "no-cache",
         }
     def auth(self, code):
+        print("------ auth 실행중 ------")
         return requests.post(
-            url = self.auth_server % "oauth/token",
-            headers = self.default_header,
-            data = {
+            url="https://kauth.kakao.com/oauth/token",
+            headers=self.default_header,
+            data={
                 "grant_type": "authorization_code",
                 "client_id": CLIENT_ID,
                 "client_secret": CLIENT_SECRET,
@@ -23,8 +24,9 @@ class Oauth:
         ).json()
     
     def userinfo(self, bearer_token):
+        print("------ userinfo 실행중 ------")
         return requests.post(
-            url=self.api_server % "/v2/user/me",
+            url="https://kapi.kakao.com/v2/user/me",
             headers={
                 **self.default_header,
                 **{"Authorization": bearer_token}

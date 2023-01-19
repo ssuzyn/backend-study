@@ -15,21 +15,24 @@ def kakaoLogin():
     return redirect(kakao_oauth_url)
 
 def callback():
-    code = request.args["code"]
-    print(code)
+    try:
+        code = request.args["code"]
+        print(code)
 
-    #전달받은 authorization code를 통해서 access_token 발급
-    oauth = Oauth()
-    auth_info = oauth.auth(code)
+        #전달받은 authorization code를 통해서 access_token 발급
+        oauth = Oauth()
+        auth_info = oauth.auth(code)
 
-    #error 발생 시 로그인 페이지로 redirect
-    if "error" in auth_info:
-        print("error !!")
-        return {'message' : '인증 실패'}, 404
+        #error 발생 시 로그인 페이지로 redirect
+        if "error" in auth_info:
+            print("error !!")
+            return {'message' : '인증 실패'}, 404
+        
+        #access_token을 사용하여 user의 정보 받아오기
+        user = oauth.userinfo(f"Bearer " + auth_info['access_token'])
+    except KeyError:
+            return make_response({"message" : "INVALID_TOKEN"}, 400)
     
-    #access_token을 사용하여 user의 정보 받아오기
-    user = oauth.userinfo("Bearer " + auth_info['access_token'])
-
     print(user)
     kakao_account = user["kakao_account"]
     profile = kakao_account["profile"]
@@ -38,14 +41,15 @@ def callback():
         email = kakao_account["email"]
     else:
         email = f"{name}@kakao.com"
+    print(name)
     
-    user = db.findByName(name)
+    user = db().findByName(name)
 
     #user가 기존에 없는 사람이라면 db에 추가하고 session에 저장하여 로그인 상태로 만든다.
     if user is None:
-        user = db.setUser(name, email)
+        db().setUser(name, email)
 
-    session['email'] = user['email']
+    session['email'] = email
 
     return redirect(url_for('kakaoMain'))
 

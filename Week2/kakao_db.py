@@ -18,8 +18,9 @@ class database():
         self.db.close()
 
     def findByName(self, name):
-        sql = "select * from kakaouser where name = %s"
+        sql = "select * from kakaouser where name = (%s)"
         self.cursor.execute(sql, name)
         data = self.cursor.fetchone()
         self.db.commit()
         self.db.close()
+        return data
