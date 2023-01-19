@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, redirect, url_for, request
 import controller as con
 import kakao_controller as ka
 from datetime import timedelta
@@ -25,11 +25,18 @@ def sessionLogin(): return con.sessionLogin()
 @app.route("/v1/login/sessionVerify", methods=["GET", "POST"])
 def sessionVerify(): return con.sessionVerify()
 
+@app.route("/v1/oauth")
+def kakaoMain(): return ka.kakaoMain()
+
 @app.route("/v1/oauth/kakao")
 def kakaoLogin(): return ka.kakaoLogin()
 
-@app.route("/v1/oauth/callback/")
-def callback(): return ka.callback()
+@app.route("/v1/oauth/callback/", methods=["GET"])
+def callback():
+    return ka.callback()
+
+@app.route("/v1/oauth/signout")
+def kakao_signout(): return ka.kakao_sign_out()
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
