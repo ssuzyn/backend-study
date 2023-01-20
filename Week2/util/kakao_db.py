@@ -4,8 +4,8 @@ class database():
     def __init__(self):
         self.db = pymysql.connect(
             host='localhost',
-            user='ssugin',
-            password='annie1004',
+            user='root',
+            password='pwd',
             db='back_study',
             charset='utf8'
         )
