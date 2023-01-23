@@ -13,8 +13,19 @@ topics = [
     {'id':3, 'title':'Model', 'body':'Model is ..'},
 ]
 
-def HTMLTemplate(articleTag):
+def HTMLTemplate(articleTag, id=None):
     global topics #전역변수로 사용하겠다
+    contextUI = ''
+    if id != None:
+        contextUI = f'''
+            <li>
+                <form action="/delete/" method="post">
+                    <input type="hidden" name="id" value={id}>
+                    <input type="submit" value="delete">
+                </form>
+            </li>
+            <li><a href="/update/{id}">update</a></li>
+        '''
     ol =''
     for topic in topics:
         ol += f'<li><a href="/read/{topic["id"]}">{topic["title"]}</a></li>'
@@ -28,6 +39,7 @@ def HTMLTemplate(articleTag):
         {articleTag}
         <ul>
             <li><a href="/create/">create</a></li>
+            {contextUI}
         </ul>
     </body>
     </html>
@@ -61,6 +73,44 @@ def create(request):
         nextId += 1
         return redirect(url)
 
+@csrf_exempt
+def delete(request):
+    global topics
+    if request.method == 'POST':
+        id = request.POST['id']
+        newTopics = []
+        for topic in topics:
+            if topic['id'] != int(id):
+                newTopics.append(topic)
+        topic = newTopics
+        return redirect("/")
+
+@csrf_exempt
+def update(request, id):
+    global topics
+    if request.method == 'GET':
+        for topic in topics:
+            if topic['id'] == int(id):
+                selectedTopic = {
+                    "title" : topic['title'],
+                    "body" : topic['body']
+                }
+        article = f'''
+            <form action="/update/{id}/" method="post">
+            <p><input type="text" name="title" placeholder="title" value={selectedTopic["title"]}></p>
+            <p><textarea name="body" placeholder="body">{selectedTopic['body']}</textarea></p>
+            <p><input type="submit"></p>
+            </form>
+        '''
+        return HttpResponse(HTMLTemplate(article, id))
+    elif request.method == 'POST':
+        title = request.POST['title']
+        body = request.POST['body']
+        for topic in topics:
+            if topic['id'] == int(id):
+                topic['title'] = title
+                topic['body'] = body
+        return redirect(f'/read/{id}')
 
 def read(request, id):
     global topics
@@ -68,4 +118,4 @@ def read(request, id):
     for topic in topics:
         if topic['id'] == int(id):
             article = f'<h2>{topic["title"]}</h2>{topic["body"]}'
-    return HttpResponse(HTMLTemplate(article))
+    return HttpResponse(HTMLTemplate(article, id))
