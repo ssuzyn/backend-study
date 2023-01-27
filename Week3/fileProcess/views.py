@@ -1,14 +1,14 @@
 from django.shortcuts import HttpResponse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-import json, os, xmltodict, csv, yaml
+import json, os, xmltodict, csv, yaml, exifread
+from PIL.ExifTags import TAGS
 
 def main(request):
     return HttpResponse('''file processing ability page''')
 
 @csrf_exempt
 def jsonFile(request):
-    print(os.getcwd())
     if request.method == 'GET':
         return HttpResponse('''JSON file page''')
     elif request.method == 'POST':
@@ -51,3 +51,21 @@ def yamlFile(request):
         path = json.loads(request.body)['path']
         file = yaml.safe_load(open(path + '.yaml'))
         return JsonResponse({"status" : "ok", "body" : file})
+
+@csrf_exempt
+def exifFile(request):
+    if request.method == 'GET':
+        return HttpResponse('''exif file page''')
+    elif request.method == 'POST':
+        path = json.loads(request.body)['path']
+        f = open(path, 'rb')
+        tags = exifread.process_file(f, details=False)
+
+        info = {}
+        for t in tags:
+            tag = TAGS.get(t, t)
+            data = tags.get(t)
+            if tag in ['Image Make', 'GPS GPSLatitude', 'GPS GPSLongitude']:
+                info[f'{tag}'] = f'{data}'
+                
+        return JsonResponse({"status" : "ok", "body" : info})
