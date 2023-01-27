@@ -1,7 +1,7 @@
 from django.shortcuts import HttpResponse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-import json, os, xmltodict, csv, yaml, exifread
+import json, xmltodict, csv, yaml, exifread
 from PIL.ExifTags import TAGS
 
 def main(request):
@@ -11,6 +11,7 @@ def main(request):
 def jsonFile(request):
     if request.method == 'GET':
         return HttpResponse('''JSON file page''')
+
     elif request.method == 'POST':
         path = json.loads(request.body)['path']
         file = open(path + '.json')
@@ -22,6 +23,7 @@ def jsonFile(request):
 def xmlFile(request):
     if request.method == 'GET':
         return HttpResponse('''xml file page''')
+
     elif request.method == 'POST':
         path = json.loads(request.body)['path']
         file = open(path + '.xml')
@@ -32,6 +34,7 @@ def xmlFile(request):
 def csvFile(request):
     if request.method == 'GET':
         return HttpResponse('''csv file page''')
+
     elif request.method == 'POST':
         data = []
         path = json.loads(request.body)['path']
@@ -46,6 +49,7 @@ def csvFile(request):
 def yamlFile(request):
     if request.method == 'GET':
         return HttpResponse('''csv file page''')
+
     elif request.method == 'POST':
         data =[]
         path = json.loads(request.body)['path']
@@ -56,6 +60,7 @@ def yamlFile(request):
 def exifFile(request):
     if request.method == 'GET':
         return HttpResponse('''exif file page''')
+
     elif request.method == 'POST':
         path = json.loads(request.body)['path']
         f = open(path, 'rb')
@@ -67,5 +72,5 @@ def exifFile(request):
             data = tags.get(t)
             if tag in ['Image Make', 'GPS GPSLatitude', 'GPS GPSLongitude']:
                 info[f'{tag}'] = f'{data}'
-                
+
         return JsonResponse({"status" : "ok", "body" : info})
