@@ -1,5 +1,5 @@
 from django_seed import Seed
-from myapp.models import User, Post
+from myapp.db.models import User, Post
 from faker import Faker
 import random
 
