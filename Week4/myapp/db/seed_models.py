@@ -27,7 +27,7 @@ class testData:
             {
                 "title": lambda x: seeder.faker.sentence(),
                 "content": lambda x: seeder.faker.text(),
-                "userId" : random.choice(user),
+                "userId" : lambda x: random.choice(user),
                 "date": lambda x: seeder.faker.date_time(),
                 "views": lambda x: seeder.faker.pyint(),
                 "like_count": lambda x: seeder.faker.pyint(),
@@ -35,3 +35,4 @@ class testData:
         )
         seeder.execute()
         print(f"{total} data were created")
+        return Post.objects.all()
