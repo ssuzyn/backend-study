@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 from myapp.db.seed_models import testData
-from myapp.db.db_controller import getList
+from myapp.db.db_controller import getList, search
 import json
 
 T = testData()
@@ -47,6 +47,24 @@ def postList(request):
             data = []
             if type == 'most': data = getList.getMost(cnt)
             elif type == 'recent': data = getList.getRecent(cnt)
+
+            result = serializers.serialize("json", data)
+            return JsonResponse(json.loads(result), safe=False, status=200)
+
+        except Exception as ex:
+            print('error !!', ex)
+            return JsonResponse({"status" : "400"})
+
+@csrf_exempt
+def postSearch(request):
+    if request.method == 'GET':
+        try:
+            type = request.GET['type']
+            text = request.GET['text']
+            data = []
+            if type == 'title': data = search.getTitle(text)
+            elif type == 'content': data = search.getContent(text)
+            elif type == 'writer': data = search.getWriter(int(text))
 
             result = serializers.serialize("json", data)
             return JsonResponse(json.loads(result), safe=False, status=200)
