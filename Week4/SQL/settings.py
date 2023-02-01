@@ -3,7 +3,7 @@ import SQL.my_settings as my_settings
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-ms9c(k7uezn5odeok6)g9(94%9+-zz7ve_8(1vy$dm&)fme=qj'
+SECRET_KEY = my_settings.MY_SECRET_KEY
 
 DEBUG = True
 
